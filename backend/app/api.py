@@ -5,7 +5,6 @@ from app.auth import authenticate_user, create_access_token, get_current_user, r
 from app.database import SessionLocal, get_db
 from app.models import Job, JobStage, Sample
 from app.pipeline.runner import create_job_stages, run_pipeline_sync
-from app.MetricFieldSwap import swap_job_metrics_inplace
 from app.schemas import (
     HealthOut,
     JobCreate,
@@ -99,10 +98,7 @@ def create_job(
 
 @router.get("/jobs", response_model=list[JobListItem])
 def list_jobs(_user: dict = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.query(Job).order_by(Job.id.desc()).all()
-    for j in rows:
-        swap_job_metrics_inplace(j)
-    return rows
+    return db.query(Job).order_by(Job.id.desc()).all()
 
 
 @router.get("/jobs/{job_id}", response_model=JobOut)
@@ -115,7 +111,6 @@ def get_job(job_id: int, _user: dict = Depends(get_current_user), db: Session = 
     )
     if not job:
         raise HTTPException(status_code=404, detail="作业不存在")
-    swap_job_metrics_inplace(job)
     return job
 
 

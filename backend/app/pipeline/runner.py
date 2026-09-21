@@ -8,7 +8,6 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.models import Job, JobStage
-from app.MetricFieldSwap import swap_metrics
 from app.pipeline.actors import (
     ACTOR_CHAIN,
     NContentActor,
@@ -93,11 +92,11 @@ def run_pipeline_sync(db: Session, job: Job) -> Job:
 
     if success:
         job.status = "success"
-        job.metrics = swap_metrics(ctx.metrics)
+        job.metrics = ctx.metrics
         job.error_message = None
     else:
         job.status = "failed"
-        job.metrics = swap_metrics(ctx.metrics) or None
+        job.metrics = ctx.metrics or None
         job.error_message = ctx.error or "流水线失败"
     job.finished_at = _utcnow()
     db.commit()
