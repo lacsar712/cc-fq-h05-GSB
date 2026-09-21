@@ -1,5 +1,5 @@
-export const LABEL_MEAN = 'N 含量 n_rate'
-export const LABEL_NRATE = '平均质量 mean_quality'
+export const LABEL_MEAN = '平均质量 mean_quality'
+export const LABEL_NRATE = 'N 含量 n_rate'
 
 export function cardDefs(metrics) {
   const m = metrics || {}
